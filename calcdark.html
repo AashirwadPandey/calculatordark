@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Calculator - Aashirwad Pandey</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c1e25, #111a21);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            margin: auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #2ecc71, #1abc9c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #8c9ba5;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .calculator {
+            background: rgba(15, 23, 30, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(46, 204, 113, 0.15);
+            animation: slideUp 0.8s ease;
+        }
+
+        .display {
+            background: rgba(10, 18, 25, 0.9);
+            border-radius: 15px;
+            padding: 25px 20px;
+            margin-bottom: 25px;
+            text-align: right;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(46, 204, 113, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .previous-operation {
+            min-height: 24px;
+            font-size: 1.2rem;
+            color: #8c9ba5;
+            margin-bottom: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .current-operation {
+            min-height: 50px;
+            font-size: 2.5rem;
+            font-weight: 500;
+            color: #f0f0f0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .button {
+            background: rgba(25, 35, 45, 0.8);
+            color: #e0e0e0;
+            border: none;
+            border-radius: 12px;
+            padding: 20px 0;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .button:hover {
+            background: rgba(35, 45, 55, 0.9);
+            transform: translateY(-3px);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(46, 204, 113, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .button:hover::before {
+            opacity: 1;
+        }
+
+        .operation {
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+            font-weight: 600;
+        }
+
+        .operation:hover {
+            background: rgba(46, 204, 113, 0.25);
+        }
+
+        .function {
+            background: rgba(155, 89, 182, 0.15);
+            color: #9b59b6;
+            font-size: 1.2rem;
+        }
+
+        .function:hover {
+            background: rgba(155, 89, 182, 0.25);
+        }
+
+        .equals {
+            background: linear-gradient(45deg, #2ecc71, #1abc9c);
+            color: white;
+            font-weight: 600;
+            grid-column: span 2;
+        }
+
+        .equals:hover {
+            background: linear-gradient(45deg, #27ae60, #16a085);
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+        }
+
+        .clear {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+
+        .clear:hover {
+            background: rgba(231, 76, 60, 0.25);
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            width: 100%;
+            padding: 20px 0;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .footer-btn {
+            background: linear-gradient(45deg, #2ecc71, #1abc9c);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+            background: linear-gradient(45deg, #27ae60, #16a085);
+        }
+
+        .credit {
+            margin-top: 15px;
+            color: #8c9ba5;
+            font-size: 1.1rem;
+        }
+
+        .credit span {
+            color: #2ecc71;
+            font-weight: 600;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .button {
+                padding: 16px 0;
+                font-size: 1.2rem;
+            }
+            
+            .current-operation {
+                font-size: 2rem;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .footer-btn {
+                width: 80%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Aashirwad Pandey</h1>
+            <p>Advanced Scientific Calculator with Dark Theme</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="display">
+                <div class="previous-operation" id="previous-operation"></div>
+                <div class="current-operation" id="current-operation">0</div>
+            </div>
+            
+            <div class="buttons-grid">
+                <button class="button function" data-operation="sin">sin</button>
+                <button class="button function" data-operation="cos">cos</button>
+                <button class="button function" data-operation="tan">tan</button>
+                <button class="button clear" data-operation="clear">AC</button>
+                
+                <button class="button function" data-operation="percent">%</button>
+                <button class="button" data-number="7">7</button>
+                <button class="button" data-number="8">8</button>
+                <button class="button" data-number="9">9</button>
+                
+                <button class="button operation" data-operation="÷">÷</button>
+                <button class="button" data-number="4">4</button>
+                <button class="button" data-number="5">5</button>
+                <button class="button" data-number="6">6</button>
+                
+                <button class="button operation" data-operation="×">×</button>
+                <button class="button" data-number="1">1</button>
+                <button class="button" data-number="2">2</button>
+                <button class="button" data-number="3">3</button>
+                
+                <button class="button operation" data-operation="-">−</button>
+                <button class="button" data-number="0">0</button>
+                <button class="button" data-number=".">.</button>
+                <button class="button" data-operation="delete">DEL</button>
+                
+                <button class="button operation" data-operation="+">+</button>
+                <button class="button equals" data-operation="equals">=</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-links">
+                <a href="https://www.aashirwadpandey.com.np" class="footer-btn">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="https://www.aashirwadpandey.com.np/contact.html" class="footer-btn">
+                    <i class="fas fa-envelope"></i> Contact
+                </a>
+                <a href="https://www.aashirwadpandey.com.np/work.html" class="footer-btn">
+                    <i class="fas fa-briefcase"></i> Past Works
+                </a>
+                <a href="https://www.aashirwadpandey.com.np/about.html" class="footer-btn">
+                    <i class="fas fa-user"></i> About Me
+                </a>
+            </div>
+            <div class="credit">Designed and Developed by <span>Aashirwad Pandey</span></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentOperationElement = document.getElementById('current-operation');
+            const previousOperationElement = document.getElementById('previous-operation');
+            let currentOperand = '0';
+            let previousOperand = '';
+            let operation = null;
+            let shouldResetScreen = false;
+
+            // Button event listeners
+            document.querySelectorAll('.button[data-number]').forEach(button => {
+                button.addEventListener('click', () => appendNumber(button.textContent));
+            });
+
+            document.querySelectorAll('.button[data-operation]').forEach(button => {
+                button.addEventListener('click', () => handleOperation(button.dataset.operation));
+            });
+
+            // Helper functions
+            function appendNumber(number) {
+                if (currentOperand === '0' || shouldResetScreen) {
+                    currentOperand = number === '.' ? '0.' : number;
+                    shouldResetScreen = false;
+                } else {
+                    if (number === '.' && currentOperand.includes('.')) return;
+                    currentOperand += number;
+                }
+                updateDisplay();
+            }
+
+            function handleOperation(op) {
+                if (op === 'clear') {
+                    resetCalculator();
+                    updateDisplay();
+                    return;
+                }
+
+                if (op === 'delete') {
+                    if (currentOperand.length === 1) {
+                        currentOperand = '0';
+                    } else {
+                        currentOperand = currentOperand.slice(0, -1);
+                    }
+                    updateDisplay();
+                    return;
+                }
+
+                if (op === 'equals') {
+                    if (previousOperand === '' || operation === null) return;
+                    calculate();
+                    updateDisplay();
+                    return;
+                }
+
+                if (['sin', 'cos', 'tan', 'percent'].includes(op)) {
+                    applyFunction(op);
+                    updateDisplay();
+                    return;
+                }
+
+                if (previousOperand !== '') {
+                    calculate();
+                }
+
+                operation = op;
+                previousOperand = currentOperand;
+                shouldResetScreen = true;
+                updateDisplay();
+            }
+
+            function applyFunction(func) {
+                const current = parseFloat(currentOperand);
+                let result;
+                
+                switch(func) {
+                    case 'sin':
+                        result = Math.sin(current * (Math.PI / 180)); // Convert to radians
+                        break;
+                    case 'cos':
+                        result = Math.cos(current * (Math.PI / 180));
+                        break;
+                    case 'tan':
+                        result = Math.tan(current * (Math.PI / 180));
+                        break;
+                    case 'percent':
+                        result = current / 100;
+                        break;
+                }
+                
+                currentOperand = result.toString();
+                previousOperand = `${func}(${current})`;
+                operation = null;
+            }
+
+            function calculate() {
+                let computation;
+                const prev = parseFloat(previousOperand);
+                const current = parseFloat(currentOperand);
+                
+                if (isNaN(prev) || isNaN(current)) return;
+                
+                switch(operation) {
+                    case '+':
+                        computation = prev + current;
+                        break;
+                    case '-':
+                        computation = prev - current;
+                        break;
+                    case '×':
+                        computation = prev * current;
+                        break;
+                    case '÷':
+                        computation = prev / current;
+                        break;
+                    default:
+                        return;
+                }
+                
+                currentOperand = computation.toString();
+                operation = null;
+                previousOperand = '';
+            }
+
+            function resetCalculator() {
+                currentOperand = '0';
+                previousOperand = '';
+                operation = null;
+            }
+
+            function updateDisplay() {
+                currentOperationElement.textContent = formatDisplayNumber(currentOperand);
+                if (operation !== null) {
+                    previousOperationElement.textContent = `${formatDisplayNumber(previousOperand)} ${operation}`;
+                } else if (previousOperand) {
+                    previousOperationElement.textContent = previousOperand;
+                } else {
+                    previousOperationElement.textContent = '';
+                }
+            }
+
+            function formatDisplayNumber(number) {
+                const maxLength = 12;
+                const numStr = number.toString();
+                
+                if (numStr.length > maxLength) {
+                    return parseFloat(numStr).toExponential(6);
+                }
+                return numStr;
+            }
+
+            // Initialize calculator
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>
