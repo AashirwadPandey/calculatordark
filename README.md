@@ -19,7 +19,7 @@ A **simple yet powerful** scientific calculator designed with a visually strikin
 You can deploy the calculator to your own environment using one of the platforms below:
 
 [![Deploy to GitHub Pages](https://img.shields.io/badge/Deploy-GitHub_Pages-222?style=for-the-badge&logo=github&logoColor=white)](https://docs.github.com/en/pages)
-[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project)
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/AashirwadPandey/calculatordark)
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start)
 
 ---
